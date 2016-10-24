@@ -2,10 +2,10 @@ from contract import Contract
 
 class Bond(Contract):
     def __init__(self, state, num_payments, value_payments, value_maturity):
-        Contract.__init__(self, state)
         self.value_payments = value_payments
         self.value_maturity = value_maturity
         self.num_payments = num_payments
+        self.state = state
 
     def paymaturity(self):
         if self.state == self.num_payments:
