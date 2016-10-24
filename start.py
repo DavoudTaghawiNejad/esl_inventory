@@ -29,3 +29,8 @@ pprint(inventroy.valued_assets(scenario))
 print('liablities')
 pprint(inventroy.valued_liablities(scenario))
 
+inventroy.remove(Good('cookies'), 5)
+print('remove 5 cookies')
+print('assets')
+pprint(inventroy.valued_assets(scenario))
+

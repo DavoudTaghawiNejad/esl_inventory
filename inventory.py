@@ -14,9 +14,9 @@ class Inventory:
 
     def remove(self, entry, quantity):
         try:
-            if self.inventory[entry.ham()] - quantity > 0:
-                self.inventory[entry.ham()] -= quantity
-            elif self.inventory[entry.ham()] - quantity > -0.00001:
+            if self.inventory[entry.ham()][1] - quantity > 0:
+                self.inventory[entry.ham()][1] -= quantity
+            elif self.inventory[entry.ham()][1] - quantity > -0.00001:
                 del self.inventory[entry.ham()]
             else:
                 raise NotEnoughGoods
