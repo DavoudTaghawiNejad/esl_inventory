@@ -9,10 +9,10 @@ from bond import Bond
 inventroy = Inventory()
 inventroy.add(Good('cookies'), 10)
 pprint(inventroy.inventory)
-inventroy.add(PullOption('pointel', 0, execution_price=5, underlying='intel'), 1)
+inventroy.add(PullOption(0, execution_price=5, underlying='intel'), 1)
 pprint(inventroy.inventory)
-inventroy.add(Bond('bond', 0, num_payments=10, value_payments=1, value_maturity=10), 1)
-inventroy.add(Bond('bond', 0, num_payments=100, value_payments=-1, value_maturity=-100), 1)
+inventroy.add(Bond(0, num_payments=10, value_payments=1, value_maturity=10), 1)
+inventroy.add(Bond(0, num_payments=100, value_payments=-1, value_maturity=-100), 1)
 pprint(inventroy.inventory)
 
 
