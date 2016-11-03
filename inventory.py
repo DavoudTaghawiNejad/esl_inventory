@@ -1,50 +1,63 @@
 from abce import NotEnoughGoods
 from copy import copy
-
+from good import Good
 
 class Inventory:
     def __init__(self):
-        self.inventory = {}
+        self.contracts = set()
+        self.goods = {}
 
-    def add(self, entry, quantity):
-        try:
-            self.inventory[entry.ham()][1] += quantity
-        except KeyError:
-            self.inventory[entry.ham()] = [entry, quantity]
+    def add(self, entry):
+        if isinstance(entry, Good):
+            try:
+                self.goods[entry.name] += entry.quantity
+            except KeyError:
+                self.goods[entry.name] = entry.quantity
+        else:
+            assert entry not in self.contracts
+            self.contracts.add(entry)
 
-    def remove(self, entry, quantity):
-        try:
-            if self.inventory[entry.ham()][1] - quantity > 0:
-                self.inventory[entry.ham()][1] -= quantity
-            elif self.inventory[entry.ham()][1] - quantity > -0.00001:
-                del self.inventory[entry.ham()]
-            else:
+    def remove(self, entry):
+        if isinstance(entry, Good):
+            try:
+                if entry.quantity > self.goods[entry.name]:
+                    raise NotEnoughGoods
+                self.goods[entry.name] -= entry.quantity
+            except KeyError:
                 raise NotEnoughGoods
-        except KeyError:
-            raise NotEnoughGoods
-
-    def change_state(self, entry, quantity, state_change):
-        self.remove(entry, quantity)
-        new_entry = copy(entry)
-        new_entry.change_state(state_change)
-        self.add(new_entry, quantity)
+        else:
+            self.contracts.remove(entry)
 
     def netvalue(self, parameters):
-        return sum((entry[0].valutation(parameters) * entry[1]) for entry in self.inventory.values())
+        return (sum((entry[0].valutation(parameters)) for entry in self.contracts)
+                + sum(quantity * parameters['good_prices'][name] for name, quantity in self.goods.items()))
 
     def assetvalue(self, parameters):
-        return sum(max((entry[0].valutation(parameters) * entry[1]), 0)
-                        for entry in self.inventory.values())
+        return (sum(max(entry.valutation(parameters), 0)for entry in self.contracts)
+                + sum(quantity * parameters[('price', name)]
+                      for name, quantity in self.goods.items()
+                      if parameters[('price', name)] > 0))
 
     def liablityvalue(self, parameters):
-        return sum(min((entry[0].valutation(parameters) * entry[1]), 0)
-                        for entry in self.inventory.values())
+        return (sum(min(entry.valutation(parameters), 0)for entry in self.contracts)
+                + sum(quantity * parameters[('price', name)]
+                      for name, quantity in self.goods.items()
+                      if parameters[('price', name)] < 0))
 
     def valued_assets(self, parameters):
-        return {key: entry[0].valutation(parameters) * entry[1]
-                for key, entry in self.inventory.iteritems() if entry[0].valutation(parameters) > 0}
+        ret = {str(entry): entry.valutation(parameters)
+                     for entry in self.contracts
+                     if entry.valutation(parameters) >= 0}
+        ret.update({name: quantity for name, quantity in self.goods.items()
+                      if parameters[('price', name)] >= 0})
+        return ret
 
     def valued_liablities(self, parameters):
-        return {key: entry[0].valutation(parameters) * entry[1]
-                for key, entry in self.inventory.iteritems() if entry[0].valutation(parameters) < 0}
+        ret = {str(entry): entry.valutation(parameters)
+               for entry in self.contracts
+               if entry.valutation(parameters) < 0}
+        ret.update({name: quantity
+                    for name, quantity in self.goods.items()
+                    if parameters[('price', name)] < 0})
+        return ret
 

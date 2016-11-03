@@ -1,10 +1,10 @@
-from contract import Contract
 
 
-class Good(Contract):
-    def __init__(self, type):
-        self.type = type
+class Good:
+    def __init__(self, name, quantity):
+        self.name = name
+        self.quantity = quantity
 
     def valutation(self, parameters):
-        return parameters[('price', self.type)]
+        return parameters[('price', self.name)] * self.quantity
 

@@ -7,7 +7,7 @@ class Bond(Contract):
         self.num_payments = num_payments
         self.state = state
 
-    def paymaturity(self):
+    def pay(self):
         if self.state == self.num_payments:
             return 0
         self.state += 1

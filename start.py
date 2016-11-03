@@ -6,31 +6,48 @@ from pulloption import PullOption
 from bond import Bond
 
 
-inventroy = Inventory()
-inventroy.add(Good('cookies'), 10)
-pprint(inventroy.inventory)
-inventroy.add(PullOption(execution_price=5, underlying='intel'), 1)
-pprint(inventroy.inventory)
-inventroy.add(Bond(0, num_payments=10, value_payments=1, value_maturity=10), 1)
-inventroy.add(Bond(0, num_payments=100, value_payments=-1, value_maturity=-100), 1)
-pprint(inventroy.inventory)
+inventory = Inventory()
+print('add cookies')
+cookies = Good('cookies', 5)
+inventory.add(cookies)
+pprint(inventory.goods)
+print('add more cookies')
+cookies2 = Good('cookies', 5)
+inventory.add(cookies2)
+pprint(inventory.goods)
+print('remove 5 cookies')
+inventory.remove(cookies)
+pprint(inventory.goods)
+inventory.add(PullOption(execution_price=5, underlying='intel'))
+pprint(inventory.contracts)
+bond1 = Bond(0, num_payments=10, value_payments=1, value_maturity=10)
+inventory.add(bond1)
+inventory.add(Bond(0, num_payments=100, value_payments=-1, value_maturity=-100))
+pprint(inventory.contracts)
 
 
 scenario = {('price', 'cookies'): 1,
             ('price', 'intel'): 7,
             'interestrate': 0.01}
-print('assetvalue')
-pprint(inventroy.assetvalue(scenario))
 
 print('assets')
-pprint(inventroy.valued_assets(scenario))
+pprint(inventory.valued_assets(scenario))
 
 
 print('liablities')
-pprint(inventroy.valued_liablities(scenario))
+pprint(inventory.valued_liablities(scenario))
 
-inventroy.remove(Good('cookies'), 5)
-print('remove 5 cookies')
+
 print('assets')
-pprint(inventroy.valued_assets(scenario))
+pprint(inventory.valued_assets(scenario))
+
+print('assetvalue')
+print('pay one out of two bonds')
+pprint(inventory.assetvalue(scenario))
+print('valutation of bond1')
+print(bond1.valutation(scenario))
+bond1.pay()
+print('bond and asset value after bond1 is payed')
+print(bond1.valutation(scenario))
+pprint(inventory.assetvalue(scenario))
 
