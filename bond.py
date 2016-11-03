@@ -16,8 +16,7 @@ class Bond(Contract):
         else:
             return self.value_payments
 
-    def valutation(self, parameters):
-        i = parameters['interestrate']
-        N = self.num_payments - self.state
-        return self.value_payments * ((1 - ((1 + i) ** (- N))) / i) + self.value_maturity * (1 + i) ** (- N)
+
+
+
 

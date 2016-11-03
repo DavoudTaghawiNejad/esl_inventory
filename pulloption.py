@@ -6,5 +6,3 @@ class PullOption(Contract):
         self.execution_price = execution_price
         self.underlying = underlying
 
-    def valutation(self, parameters):
-        return max(0, parameters[('price', self.underlying)] - self.execution_price)

@@ -28,34 +28,34 @@ class Inventory:
         else:
             self.contracts.remove(entry)
 
-    def netvalue(self, parameters):
-        return (sum((entry[0].valutation(parameters)) for entry in self.contracts)
+    def netvalue(self, parameters, usgap):
+        return (sum(usgap[entry.__class__](entry, parameters) for entry in self.contracts)
                 + sum(quantity * parameters['good_prices'][name] for name, quantity in self.goods.items()))
 
-    def assetvalue(self, parameters):
-        return (sum(max(entry.valutation(parameters), 0)for entry in self.contracts)
+    def assetvalue(self, parameters, usgap):
+        return (sum(max(usgap[entry.__class__](entry, parameters), 0)for entry in self.contracts)
                 + sum(quantity * parameters[('price', name)]
                       for name, quantity in self.goods.items()
                       if parameters[('price', name)] > 0))
 
-    def liablityvalue(self, parameters):
-        return (sum(min(entry.valutation(parameters), 0)for entry in self.contracts)
+    def liablityvalue(self, parameters, usgap):
+        return (sum(min(usgap[entry.__class__](entry, parameters), 0)for entry in self.contracts)
                 + sum(quantity * parameters[('price', name)]
                       for name, quantity in self.goods.items()
                       if parameters[('price', name)] < 0))
 
-    def valued_assets(self, parameters):
-        ret = {str(entry): entry.valutation(parameters)
-                     for entry in self.contracts
-                     if entry.valutation(parameters) >= 0}
+    def valued_assets(self, parameters, usgap):
+        ret = {str(entry): usgap[entry.__class__](entry, parameters)
+               for entry in self.contracts
+               if usgap[entry.__class__](entry, parameters) >= 0}
         ret.update({name: quantity for name, quantity in self.goods.items()
                       if parameters[('price', name)] >= 0})
         return ret
 
-    def valued_liablities(self, parameters):
-        ret = {str(entry): entry.valutation(parameters)
+    def valued_liablities(self, parameters, usgap):
+        ret = {str(entry): usgap[entry.__class__](entry, parameters)
                for entry in self.contracts
-               if entry.valutation(parameters) < 0}
+               if usgap[entry.__class__](entry, parameters) < 0}
         ret.update({name: quantity
                     for name, quantity in self.goods.items()
                     if parameters[('price', name)] < 0})

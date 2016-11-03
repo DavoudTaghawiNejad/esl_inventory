@@ -4,6 +4,7 @@ from good import Good
 from contract import Contract
 from pulloption import PullOption
 from bond import Bond
+from valutation import usgap
 
 
 inventory = Inventory()
@@ -31,23 +32,23 @@ scenario = {('price', 'cookies'): 1,
             'interestrate': 0.01}
 
 print('assets')
-pprint(inventory.valued_assets(scenario))
+pprint(inventory.valued_assets(scenario, usgap))
 
 
 print('liablities')
-pprint(inventory.valued_liablities(scenario))
+pprint(inventory.valued_liablities(scenario, usgap))
 
 
 print('assets')
-pprint(inventory.valued_assets(scenario))
+pprint(inventory.valued_assets(scenario, usgap))
 
 print('assetvalue')
 print('pay one out of two bonds')
-pprint(inventory.assetvalue(scenario))
+pprint(inventory.assetvalue(scenario, usgap))
 print('valutation of bond1')
-print(bond1.valutation(scenario))
+print(bond1.valutation(scenario, usgap))
 bond1.pay()
 print('bond and asset value after bond1 is payed')
-print(bond1.valutation(scenario))
-pprint(inventory.assetvalue(scenario))
+print(bond1.valutation(scenario, usgap[Bond]))
+pprint(inventory.assetvalue(scenario, usgap))
 
